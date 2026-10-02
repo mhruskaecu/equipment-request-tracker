@@ -12,6 +12,11 @@ function clean(value) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function normalizePriority(value) {
+  const priority = clean(value);
+  return ["Low", "Normal", "High"].includes(priority) ? priority : "Normal";
+}
+
 export function validateRequest(input = {}) {
   const errors = {};
 
@@ -42,6 +47,7 @@ export function createRequest(input, options = {}) {
     requester: clean(input.requester),
     department: clean(input.department),
     equipment: clean(input.equipment),
+    priority: normalizePriority(input.priority),
     neededBy: clean(input.neededBy),
     reason: clean(input.reason),
     createdAt: now.toISOString(),
@@ -60,7 +66,12 @@ export function loadRequests(storage = globalThis.localStorage) {
     if (!stored) return [];
 
     const parsed = JSON.parse(stored);
-    return Array.isArray(parsed) ? parsed.filter(isRequestRecord) : [];
+    return Array.isArray(parsed)
+      ? parsed.filter(isRequestRecord).map((request) => ({
+          ...request,
+          priority: normalizePriority(request.priority),
+        }))
+      : [];
   } catch {
     return [];
   }
