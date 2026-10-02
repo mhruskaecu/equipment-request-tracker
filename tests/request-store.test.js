@@ -30,7 +30,7 @@ class MemoryStorage {
   }
 }
 
-test("createRequest trims input and adds system fields", () => {
+test("createRequest trims input, defaults priority, and adds system fields", () => {
   const request = createRequest(validInput, {
     id: "request-1",
     now: new Date("2026-08-17T12:00:00.000Z"),
@@ -41,10 +41,23 @@ test("createRequest trims input and adds system fields", () => {
     requester: "Jordan Lee",
     department: "Operations",
     equipment: "Laptop",
+    priority: "Normal",
     neededBy: "2026-09-15",
     reason: "Replace a failed field computer.",
     createdAt: "2026-08-17T12:00:00.000Z",
   });
+});
+
+test("createRequest preserves a selected priority", () => {
+  const request = createRequest(
+    { ...validInput, priority: "High" },
+    {
+      id: "request-priority",
+      now: new Date("2026-08-17T12:00:00.000Z"),
+    },
+  );
+
+  assert.equal(request.priority, "High");
 });
 
 test("createRequest reports missing required fields", () => {
@@ -76,6 +89,24 @@ test("saveRequests and loadRequests round-trip valid records", () => {
   saveRequests([request], storage);
 
   assert.deepEqual(loadRequests(storage), [request]);
+});
+
+test("loadRequests defaults priority for existing stored requests", () => {
+  const storage = new MemoryStorage();
+  const legacyRequest = {
+    id: "request-old",
+    requester: "Jordan Lee",
+    department: "Operations",
+    equipment: "Laptop",
+    neededBy: "2026-09-15",
+    reason: "Replace a failed field computer.",
+    createdAt: "2026-08-17T12:00:00.000Z",
+  };
+  storage.setItem(STORAGE_KEY, JSON.stringify([legacyRequest]));
+
+  assert.deepEqual(loadRequests(storage), [
+    { ...legacyRequest, priority: "Normal" },
+  ]);
 });
 
 test("loadRequests safely handles damaged stored data", () => {
