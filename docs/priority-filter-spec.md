@@ -40,3 +40,4 @@ As a manager, I want to sort equipment requests with the highest priority first 
 - Creating, editing, or deleting requests or priority values.
 - Adding authentication, a database, or new persistent storage.
 - New priority categories, notifications, or reminders.
+- Displaying the number of days an equipment request has been awaiting review. This feature focuses on sorting requests by priority and submission date, not tracking or displaying how long requests have remained unreviewed.
