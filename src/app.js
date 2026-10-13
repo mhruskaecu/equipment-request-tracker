@@ -79,7 +79,7 @@ function createRequestRow(request) {
     request.requester,
     request.department,
     request.equipment,
-    request.priority,
+    request.priority === "Normal" ? "Medium" : request.priority,
     formatDate(request.neededBy),
     request.reason,
     formatDateTime(request.createdAt),
