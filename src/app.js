@@ -6,6 +6,11 @@ import {
   saveRequests,
 } from "./request-store.js";
 
+import { RequestSortError, sortRequestsByPriority } from "./priority-sort.js";
+
+const sortControl = document.querySelector("#request-sort");
+const sortError = document.querySelector("#sort-error");
+
 const form = document.querySelector("#request-form");
 const message = document.querySelector("#form-message");
 const neededByInput = document.querySelector("#needed-by");
@@ -18,6 +23,8 @@ let requests = loadRequests();
 
 neededByInput.min = new Date().toISOString().slice(0, 10);
 renderRequests();
+
+sortControl.addEventListener("change", renderRequests);
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -52,7 +59,18 @@ function renderRequests() {
   count.textContent = `${requests.length} ${requests.length === 1 ? "request" : "requests"}`;
   emptyState.hidden = hasRequests;
   tableWrapper.hidden = !hasRequests;
-  tableBody.replaceChildren(...requests.map(createRequestRow));
+  let visibleRequests = requests;
+  sortError.textContent = "";
+  if (sortControl.value === "priority") {
+    try {
+      visibleRequests = sortRequestsByPriority(requests);
+    } catch (error) {
+      if (!(error instanceof RequestSortError)) throw error;
+      sortError.textContent = error.message;
+      sortControl.value = "original";
+    }
+  }
+  tableBody.replaceChildren(...visibleRequests.map(createRequestRow));
 }
 
 function createRequestRow(request) {
