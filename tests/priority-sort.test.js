@@ -11,10 +11,11 @@ test("AC1/AC2: priority groups then oldest first", () => {
     request("low", "Low", early),
     request("high-new", "High", late),
     request("medium", "Medium", early),
+    request("normal", "Normal", late),
     request("high-old", "High", early),
   ];
   assert.deepEqual(sortRequestsByPriority(input).map(x => x.id),
-    ["high-old", "high-new", "medium", "low"]);
+    ["high-old", "high-new", "medium", "normal", "low"]);
 });
 
 test("AC3: tied priority and timestamp preserve original order", () => {
@@ -23,7 +24,7 @@ test("AC3: tied priority and timestamp preserve original order", () => {
 });
 
 test("AC4: invalid or missing priority identifies request and preserves source", () => {
-  for (const priority of ["Normal", undefined, "Urgent"]) {
+  for (const priority of [undefined, "Urgent"]) {
     const input = [request("broken", priority, early)];
     const snapshot = structuredClone(input);
     assert.throws(() => sortRequestsByPriority(input), error =>
@@ -53,4 +54,10 @@ test("AC7: empty list sorts safely", () => {
 
 test("AC8: sorter works with plain in-memory records", () => {
   assert.deepEqual(sortRequestsByPriority([request("one", "High", early)]).length, 1);
+});
+
+test("Normal is treated as Medium without changing stored records", () => {
+  const input = [request("normal", "Normal", early), request("medium", "Medium", late)];
+  assert.deepEqual(sortRequestsByPriority(input).map(x => x.id), ["normal", "medium"]);
+  assert.equal(input[0].priority, "Normal");
 });
