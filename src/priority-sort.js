@@ -5,7 +5,7 @@ export class RequestSortError extends Error {
   }
 }
 
-const RANK = { High: 0, Medium: 1, Low: 2 };
+const RANK = { High: 0, Medium: 1, Normal: 1, Low: 2 };
 
 export function sortRequestsByPriority(requests) {
   for (const [index, request] of requests.entries()) {
