@@ -8,11 +8,11 @@ As a manager, I want to sort equipment requests with the highest priority first 
 
 ## Functional Rules
 1. Provide a user-selectable priority sort and a way to return to the original request order.
-2. When selected, show all valid requests grouped in this order: High, Medium, Low.
+2. When selected, show all valid requests grouped in this order: High, Medium, Low. Existing `Normal` priorities are treated and displayed as `Medium` for compatibility; the stored value is not changed.
 3. Within each priority group, sort by the existing request submission date/time, oldest first.
 4. For requests with equal priority and submission timestamp, preserve their original relative order.
 5. Sorting changes only the displayed order; it does not modify, remove, or create request records.
-6. If any request has missing or unrecognized priority information, show a clear error identifying the affected request. Do not guess or change its priority; leave the original unsorted view accessible. Do not present a misleading partially sorted result.
+6. If any request has missing or unrecognized priority information (other than the supported legacy `Normal` value), show a clear error identifying the affected request. Do not guess or change its priority; leave the original unsorted view accessible. Do not present a misleading partially sorted result.
 7. If any request has a missing or invalid submission date/time, show a clear error identifying the affected request. Do not guess its age; leave the original unsorted view accessible.
 8. If no requests exist, display an appropriate empty state without an error or crash.
 
