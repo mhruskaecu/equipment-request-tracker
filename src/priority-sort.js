@@ -15,7 +15,7 @@ export function sortRequestsByPriority(requests) {
     }
     if (
       typeof request.neededBy !== "string" ||
-      !/^\\d{4}-\\d{2}-\\d{2}$/.test(request.neededBy) ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(request.neededBy) ||
       !Number.isFinite(Date.parse(request.neededBy + "T00:00:00Z")) ||
       new Date(request.neededBy + "T00:00:00Z").toISOString().slice(0, 10) !== request.neededBy
     ) {
