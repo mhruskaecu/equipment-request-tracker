@@ -14,18 +14,19 @@ export function sortRequestsByPriority(requests) {
       throw new RequestSortError(`Cannot sort: request "${label}" has missing or invalid priority.`);
     }
     if (
-      typeof request.createdAt !== "string" ||
-      !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(request.createdAt) ||
-      !Number.isFinite(Date.parse(request.createdAt))
+      typeof request.neededBy !== "string" ||
+      !/^\\d{4}-\\d{2}-\\d{2}$/.test(request.neededBy) ||
+      !Number.isFinite(Date.parse(request.neededBy + "T00:00:00Z")) ||
+      new Date(request.neededBy + "T00:00:00Z").toISOString().slice(0, 10) !== request.neededBy
     ) {
-      throw new RequestSortError(`Cannot sort: request "${label}" has missing or invalid submission date.`);
+      throw new RequestSortError(`Cannot sort: request "${label}" has missing or invalid needed-by date.`);
     }
   }
 
   return requests.map((request, index) => ({ request, index }))
     .sort((a, b) =>
       RANK[a.request.priority] - RANK[b.request.priority] ||
-      Date.parse(a.request.createdAt) - Date.parse(b.request.createdAt) ||
+      a.request.neededBy.localeCompare(b.request.neededBy) ||
       a.index - b.index
     ).map(({ request }) => request);
 }
