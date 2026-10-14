@@ -103,6 +103,15 @@
           <p id="request-count" class="request-count">0 requests</p>
         </div>
 
+        <div class="field">
+          <label for="request-sort">Request order</label>
+          <select id="request-sort">
+            <option value="original">Original order (newest first)</option>
+            <option value="priority">Priority (High, Medium, Low; oldest first)</option>
+          </select>
+          <p id="sort-error" class="form-message error" role="alert"></p>
+        </div>
+
         <div id="empty-state" class="empty-state">
           <h3>No requests yet</h3>
           <p>Add the first equipment request using the form.</p>
