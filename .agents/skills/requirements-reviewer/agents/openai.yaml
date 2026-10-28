@@ -1,0 +1,3 @@
+interface:
+  display_name: "Requirements Reviewer"
+  short_description: "Compare feature requirements with code and tests"
